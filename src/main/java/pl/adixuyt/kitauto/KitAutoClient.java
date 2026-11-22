@@ -57,7 +57,7 @@ public class KitAutoClient implements ClientModInitializer {
             if (enabled) {
                 nextKitTick = tickCounter;
                 sendKit(client);
-                nextKitTick = tickCounter + 1800;
+                nextKitTick = tickCounter + 1820;
                 if (client.player != null) {
                     client.player.sendMessage(Text.literal("§aKit Auto: WŁĄCZONY"), true);
                 }
@@ -81,24 +81,17 @@ public class KitAutoClient implements ClientModInitializer {
 
         if (!cycleActive && tickCounter >= nextKitTick) {
             sendKit(client);
-            nextKitTick += 1800;
+            nextKitTick += 1820;
         }
 
-        if (!cycleActive) {
-            return;
-        }
-
-        // Jeśli menu zniknęło lub końcowe GUI się nie otworzyło,
-        // ponów /kit, aby ponownie znaleźć i kliknąć szarego shulkera.
-        if (client.currentScreen == null
-                || client.player.currentScreenHandler == client.player.playerScreenHandler) {
-            if (tickCounter - phaseStartedTick > 100) {
-                retryKit(client);
-            }
+        if (!cycleActive || client.currentScreen == null) {
             return;
         }
 
         ScreenHandler handler = client.player.currentScreenHandler;
+        if (handler == client.player.playerScreenHandler) {
+            return;
+        }
 
         // Etap 1: zwykłe kliknięcie szarego shulkera, aby go podnieść.
         if (!waitingForFinalGui) {
@@ -130,16 +123,13 @@ public class KitAutoClient implements ClientModInitializer {
                 phaseStartedTick = tickCounter;
                 return;
             }
-            if (tickCounter - phaseStartedTick > 100) {
-                retryKit(client);
-            }
             return;
         }
 
         // Czekamy, aż serwer otworzy następne GUI (zwykle nowy syncId).
         if (handler.syncId == firstGuiSyncId) {
             if (tickCounter - phaseStartedTick > 80) {
-                retryKit(client);
+                finishCycle(client);
             }
             return;
         }
@@ -182,14 +172,6 @@ public class KitAutoClient implements ClientModInitializer {
         firstGuiSyncId = -1;
         phaseStartedTick = tickCounter;
         nextClickTick = tickCounter;
-    }
-
-    private static void retryKit(MinecraftClient client) {
-        if (client.currentScreen != null && client.player != null
-                && client.player.currentScreenHandler != client.player.playerScreenHandler) {
-            client.player.closeHandledScreen();
-        }
-        sendKit(client);
     }
 
     private static void finishCycle(MinecraftClient client) {

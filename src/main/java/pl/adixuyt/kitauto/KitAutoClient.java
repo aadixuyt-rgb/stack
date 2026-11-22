@@ -97,8 +97,8 @@ public class KitAutoClient implements ClientModInitializer {
         if (!waitingForFinalGui) {
             // Najpierw szukamy szarego shulkera po typie przedmiotu.
             int targetSlot = -1;
-            int containerSlotCount = Math.max(0, handler.slots.size() - 36);
-            for (int i = 0; i < containerSlotCount; i++) {
+            for (int i = 0; i < handler.slots.size(); i++) {
+                if (handler.getSlot(i).inventory == client.player.getInventory()) continue;
                 ItemStack stack = handler.getSlot(i).getStack();
                 if (!stack.isEmpty() && stack.isOf(Items.GRAY_SHULKER_BOX)) {
                     targetSlot = i;
@@ -108,7 +108,8 @@ public class KitAutoClient implements ClientModInitializer {
 
             // W menu „Zestawy serwerowe” szary zestaw jest w 3. rzędzie,
             // 3. kolumnie (slot 20 w 9-kolumnowym GUI).
-            if (targetSlot == -1 && containerSlotCount > 20
+            if (targetSlot == -1 && handler.slots.size() > 20
+                    && handler.getSlot(20).inventory != client.player.getInventory()
                     && !handler.getSlot(20).getStack().isEmpty()) {
                 targetSlot = 20;
             }
@@ -133,11 +134,11 @@ public class KitAutoClient implements ClientModInitializer {
             return;
         }
 
-        // Etap 2: szukamy nagród WYŁĄCZNIE w górnej części GUI serwera.
-        // Ostatnie 36 slotów należy do ekwipunku gracza — nie wolno ich klikać.
+        // Etap 2: szukamy nagród tylko w slotach należących do GUI serwera.
+        // Sloty ekwipunku gracza są pomijane na podstawie Inventory, nie numeru slotu.
         if (tickCounter < nextClickTick) return;
-        int containerSlotCount = Math.max(0, handler.slots.size() - 36);
-        for (int i = 0; i < containerSlotCount; i++) {
+        for (int i = 0; i < handler.slots.size(); i++) {
+            if (handler.getSlot(i).inventory == client.player.getInventory()) continue;
             ItemStack stack = handler.getSlot(i).getStack();
             if (stack.isEmpty()) continue;
 

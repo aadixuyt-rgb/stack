@@ -88,8 +88,8 @@ public class KitAutoClient implements ClientModInitializer {
             return;
         }
 
-        // Gdy GUI nie pojawi się albo zamknie przed otwarciem końcowego menu,
-        // po chwili ponawiamy /kit, aby ponownie znaleźć i kliknąć shulkera.
+        // Jeśli menu zniknęło lub końcowe GUI się nie otworzyło,
+        // ponów /kit, aby ponownie znaleźć i kliknąć szarego shulkera.
         if (client.currentScreen == null
                 || client.player.currentScreenHandler == client.player.playerScreenHandler) {
             if (tickCounter - phaseStartedTick > 100) {
@@ -185,7 +185,6 @@ public class KitAutoClient implements ClientModInitializer {
     }
 
     private static void retryKit(MinecraftClient client) {
-        // Zamykamy pozostałe menu, ponawiamy /kit i zaczynamy od szukania shulkera.
         if (client.currentScreen != null && client.player != null
                 && client.player.currentScreenHandler != client.player.playerScreenHandler) {
             client.player.closeHandledScreen();

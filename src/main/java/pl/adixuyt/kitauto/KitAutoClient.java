@@ -88,12 +88,11 @@ public class KitAutoClient implements ClientModInitializer {
             return;
         }
 
-        // Jeśli GUI nie pojawiło się po /kit albo zamknęło się po kliknięciu
-        // shulkera i nie otworzyło końcowego menu, ponawiamy cały cykl.
+        // Gdy GUI nie pojawi się albo zamknie przed otwarciem końcowego menu,
+        // po chwili ponawiamy /kit, aby ponownie znaleźć i kliknąć shulkera.
         if (client.currentScreen == null
                 || client.player.currentScreenHandler == client.player.playerScreenHandler) {
-            long waitLimit = waitingForFinalGui ? 80 : 100;
-            if (tickCounter - phaseStartedTick > waitLimit) {
+            if (tickCounter - phaseStartedTick > 100) {
                 retryKit(client);
             }
             return;

@@ -95,17 +95,31 @@ public class KitAutoClient implements ClientModInitializer {
 
         // Etap 1: zwykłe kliknięcie szarego shulkera, aby go podnieść.
         if (!waitingForFinalGui) {
+            // Najpierw szukamy szarego shulkera po typie przedmiotu.
+            int targetSlot = -1;
             for (int i = 0; i < handler.slots.size(); i++) {
                 ItemStack stack = handler.getSlot(i).getStack();
                 if (!stack.isEmpty() && stack.isOf(Items.GRAY_SHULKER_BOX)) {
-                    firstGuiSyncId = handler.syncId;
-                    client.interactionManager.clickSlot(
-                            handler.syncId, i, 0, SlotActionType.PICKUP, client.player
-                    );
-                    waitingForFinalGui = true;
-                    phaseStartedTick = tickCounter;
-                    return;
+                    targetSlot = i;
+                    break;
                 }
+            }
+
+            // W menu „Zestawy serwerowe” szary zestaw jest w 3. rzędzie,
+            // 3. kolumnie (slot 20 w 9-kolumnowym GUI).
+            if (targetSlot == -1 && handler.slots.size() > 20
+                    && !handler.getSlot(20).getStack().isEmpty()) {
+                targetSlot = 20;
+            }
+
+            if (targetSlot != -1) {
+                firstGuiSyncId = handler.syncId;
+                client.interactionManager.clickSlot(
+                        handler.syncId, targetSlot, 0, SlotActionType.PICKUP, client.player
+                );
+                waitingForFinalGui = true;
+                phaseStartedTick = tickCounter;
+                return;
             }
             return;
         }

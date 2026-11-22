@@ -57,7 +57,7 @@ public class KitAutoClient implements ClientModInitializer {
             if (enabled) {
                 nextKitTick = tickCounter;
                 sendKit(client);
-                nextKitTick = tickCounter + 2400;
+                nextKitTick = tickCounter + 1800;
                 if (client.player != null) {
                     client.player.sendMessage(Text.literal("§aKit Auto: WŁĄCZONY"), true);
                 }
@@ -81,7 +81,7 @@ public class KitAutoClient implements ClientModInitializer {
 
         if (!cycleActive && tickCounter >= nextKitTick) {
             sendKit(client);
-            nextKitTick += 2400;
+            nextKitTick += 1800;
         }
 
         if (!cycleActive || client.currentScreen == null) {

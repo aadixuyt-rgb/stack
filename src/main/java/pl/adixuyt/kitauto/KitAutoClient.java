@@ -84,14 +84,22 @@ public class KitAutoClient implements ClientModInitializer {
             nextKitTick += 1800;
         }
 
-        if (!cycleActive || client.currentScreen == null) {
+        if (!cycleActive) {
+            return;
+        }
+
+        // Jeśli GUI nie pojawiło się po /kit albo zamknęło się po kliknięciu
+        // shulkera i nie otworzyło końcowego menu, ponawiamy cały cykl.
+        if (client.currentScreen == null
+                || client.player.currentScreenHandler == client.player.playerScreenHandler) {
+            long waitLimit = waitingForFinalGui ? 80 : 100;
+            if (tickCounter - phaseStartedTick > waitLimit) {
+                retryKit(client);
+            }
             return;
         }
 
         ScreenHandler handler = client.player.currentScreenHandler;
-        if (handler == client.player.playerScreenHandler) {
-            return;
-        }
 
         // Etap 1: zwykłe kliknięcie szarego shulkera, aby go podnieść.
         if (!waitingForFinalGui) {
@@ -123,13 +131,16 @@ public class KitAutoClient implements ClientModInitializer {
                 phaseStartedTick = tickCounter;
                 return;
             }
+            if (tickCounter - phaseStartedTick > 100) {
+                retryKit(client);
+            }
             return;
         }
 
         // Czekamy, aż serwer otworzy następne GUI (zwykle nowy syncId).
         if (handler.syncId == firstGuiSyncId) {
             if (tickCounter - phaseStartedTick > 80) {
-                finishCycle(client);
+                retryKit(client);
             }
             return;
         }
@@ -172,6 +183,15 @@ public class KitAutoClient implements ClientModInitializer {
         firstGuiSyncId = -1;
         phaseStartedTick = tickCounter;
         nextClickTick = tickCounter;
+    }
+
+    private static void retryKit(MinecraftClient client) {
+        // Zamykamy pozostałe menu, ponawiamy /kit i zaczynamy od szukania shulkera.
+        if (client.currentScreen != null && client.player != null
+                && client.player.currentScreenHandler != client.player.playerScreenHandler) {
+            client.player.closeHandledScreen();
+        }
+        sendKit(client);
     }
 
     private static void finishCycle(MinecraftClient client) {

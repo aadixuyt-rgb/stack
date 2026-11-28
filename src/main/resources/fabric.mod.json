@@ -4,15 +4,22 @@
   "version": "${version}",
   "name": "Kit Auto",
   "description": "Automatyczne odbieranie kitu co 60 sekund.",
-  "authors": ["Adixu_YT"],
+  "authors": [
+    "Adixu_YT"
+  ],
   "environment": "client",
   "entrypoints": {
-    "client": ["pl.adixuyt.kitauto.KitAutoClient"]
+    "client": [
+      "pl.adixuyt.kitauto.KitAutoClient"
+    ]
   },
   "depends": {
     "fabricloader": ">=0.16.0",
     "minecraft": "~1.21.4",
     "java": ">=21",
     "fabric-api": "*"
-  }
+  },
+  "mixins": [
+    "kit_auto.mixins.json"
+  ]
 }

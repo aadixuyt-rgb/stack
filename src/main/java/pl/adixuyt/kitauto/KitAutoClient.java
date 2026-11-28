@@ -30,6 +30,7 @@ public class KitAutoClient implements ClientModInitializer {
 
     private static boolean takePearls = true;
     private static boolean takeGapples = true;
+    private static int kitIntervalTicks = 620;
 
     @Override
     public void onInitializeClient() {
@@ -57,7 +58,7 @@ public class KitAutoClient implements ClientModInitializer {
             if (enabled) {
                 nextKitTick = tickCounter;
                 sendKit(client);
-                nextKitTick = tickCounter + 620;
+                nextKitTick = tickCounter + kitIntervalTicks;
                 if (client.player != null) {
                     client.player.sendMessage(Text.literal("§aKit Auto: WŁĄCZONY"), true);
                 }
@@ -81,7 +82,7 @@ public class KitAutoClient implements ClientModInitializer {
 
         if (!cycleActive && tickCounter >= nextKitTick) {
             sendKit(client);
-            nextKitTick += 620;
+            nextKitTick += kitIntervalTicks;
         }
 
         if (!cycleActive || client.currentScreen == null) {
@@ -182,6 +183,11 @@ public class KitAutoClient implements ClientModInitializer {
         cycleActive = false;
         waitingForFinalGui = false;
         gotAnyReward = false;
+    }
+
+    public static int getKitIntervalTicks() { return kitIntervalTicks; }
+    public static void setKitIntervalTicks(int ticks) {
+        kitIntervalTicks = Math.max(600, Math.min(620, Math.round(ticks / 2.0f) * 2));
     }
 
     public static boolean takesPearls() { return takePearls; }

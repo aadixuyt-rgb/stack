@@ -4,6 +4,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 
 /**
@@ -51,7 +52,7 @@ public final class UseCooldownState {
         return lastAttemptNanos != 0L && now - lastAttemptNanos < COOLDOWN_NANOS;
     }
 
-    // Kept for the existing client tick hook; cooldown now starts at interaction HEAD.
+    // Kept for the existing mixin RETURN hook; cooldown starts at interaction HEAD.\n    public static void finishUse(Hand hand, ActionResult result) {\n        // Intentionally empty. The attempt itself starts the cooldown.\n    }\n\n    // Kept for the existing client tick hook; cooldown now starts at interaction HEAD.
     public static void observeInventory(MinecraftClient client) {
         // No inventory observation is needed: moving items in a GUI is not an interaction attempt.
     }

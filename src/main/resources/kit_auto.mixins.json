@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "pl.adixuyt.kitauto.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "client": [
+    "BeetrootSoupCooldownMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

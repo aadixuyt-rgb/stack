@@ -6,7 +6,7 @@ import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
-import pl.adixuyt.kitauto.RightClickUseLimiter;
+import pl.adixuyt.kitauto.mixin.BeetrootSoupCooldownMixin;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.screen.ScreenHandler;
@@ -52,7 +52,7 @@ public class KitAutoClient implements ClientModInitializer {
     }
 
     private static void tick(MinecraftClient client) {
-        RightClickUseLimiter.updateReleaseState(client);
+        BeetrootSoupCooldownMixin.updateReleaseState(client);
         tickCounter++;
 
         while (toggleKey.wasPressed()) {

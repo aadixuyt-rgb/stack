@@ -51,6 +51,7 @@ public class KitAutoClient implements ClientModInitializer {
     }
 
     private static void tick(MinecraftClient client) {
+        UseCooldownState.observeInventory(client);
         tickCounter++;
 
         while (toggleKey.wasPressed()) {
